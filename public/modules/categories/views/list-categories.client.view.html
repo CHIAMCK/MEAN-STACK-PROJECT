@@ -1,0 +1,81 @@
+<section>
+    <div class="page-header">
+        <div class="form-group" class="col-md-6">
+            <input type="text" ng-model="search" typeahead="category as category.name for category in categories | filter:$viewValue | limitTo:8" class="form-control" typeahead-on-select="categorySearch($item)" placeholder="Search Category...">
+        </div>
+    </div>
+    <div ng-class="{'col-sm-7':listPageMode=='page', 'col-xs-12':listPageMode=='list', 'hidden':viewPageMode=='list'}" >
+        <div class="panel panel-default">
+            <div class="panel-heading">List Categories
+                <div class="btn-group navbar-right">
+                    <button style="margin-right:5px" class="btn-u btn-u-default" type="button" ng-click="listPageChange()">
+                        <i class="fa" ng-class="{'fa-compress':listPageMode=='list', 'fa-expand':listPageMode=='page'}"></i>
+                    </button>
+                </div>
+            </div>
+
+            <div id="tablelist" autofocus class="panel-body" style="height:515px; overflow-y: scroll;">
+                <!-- <div class="list-group">
+                    <a data-ng-repeat="category in categories | limitTo: offset - categories.length | limitTo: pageSize" ng-click="selectCategory(category,$index)" class="list-group-item">
+                        <h4 class="list-group-item-heading" data-ng-bind="category.name"></h4>
+                        <span data-ng-bind="category.description"></span>
+                    </a>
+                </div> -->
+                <div class="pull-left">
+                    <button type="button" class="btn btn-success" ng-click="listViewAdd()">Add</button>
+                    <button type="button" class="btn btn-primary">Duplicate</button>
+                    <button type="button" class="btn btn-sm btn-default navbar-btn">Total: {{total}}</button>
+                </div>
+                <table st-table="items" st-safe-src="rowCollection" st-pipe="filterListView" class="table table-striped">
+                    <thead>
+                    <tr>
+                        <th width="30px;" nowrap>#</th>
+                        <th st-sort="name">Name</th>
+                        <th st-sort="description">Description</th>
+                        <th ng-show="listPageMode=='list'" st-sort="updated">Updated</th>
+
+                    </tr>
+                    <tr>
+                        <th class="center-item"><i class="fa fa-search fa-fw"></i></th>
+                        <th ><input st-search="name" class="input-sm form-control" placeholder="Search for first name" type="text" ng-model="name"/></th>
+                        <th>
+                            <input st-search="description" placeholder="Search for description" class="input-sm form-control" type="search" ng-model="description" width="100px" nowrap/>
+                        </th>
+                        <th ng-show="listPageMode=='list'"><input date-range-picker st-search="updated" class="form-control date-picker" placeholder="Search for updated date" type="text" ng-model="date"/></th>
+                        <th ng-show="listPageMode=='list'" class="center-item" width="32px" nowrap>
+                            <button type="button" ng-click="resetSmartTableSearch();" class="btn btn-sm btn-warning rounded">
+                                <i class="fa fa-close fa-fw"></i>
+                            </button>
+                        </th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr ng-repeat="category in items track by $index" ng-class="{selected: category._id===selectedId}" ng-click="selectCategory(category,$index)">
+                        <td nowrap>{{params.pagination.start+$index+1}}</td>
+                        <td>{{category.name}}</td>
+                        <td>{{category.description}}</td>
+                        <td ng-show="listPageMode=='list'">{{category.updated | date:'yyyy-MM-dd'}}</td>
+                        <td ng-show="listPageMode=='list'"> </td>
+                    </tr>
+                    </tbody>
+                    <tfoot>
+                    <tr>
+                        <td colspan="5" class="text-center">
+                            <div st-pagination="" st-items-by-page="itemsByPage" st-displayed-pages="7"></div>
+                        </td>
+                    </tr>
+                    </tfoot>
+                </table>
+                <div class="alert alert-warning text-center" data-ng-hide="!items.$resolved || items.length">
+                    No categories yet, why don't you <a href="/#!/categories/create">create one</a>?
+                </div>
+                </div>
+
+        </div>
+    </div>
+                <div ng-class="{'col-sm-5':viewPageMode=='page', 'col-xs-12':viewPageMode=='list','hidden':listPageMode=='list'}">
+                    <div ng-if="!addEnabled && !editEnabled" ng-controller-controller="listOptions.viewController" ng-include="listOptions.viewHtml"></div>
+                    <div ng-if="addEnabled" ng-controller-controller="listOptions.addController" ng-include="listOptions.addHtml"></div>
+                    <div ng-if="editEnabled" ng-controller-controller="listOptions.editController" ng-include="listOptions.editHtml"></div>
+                </div>
+            </section>

@@ -1,0 +1,45 @@
+<section >
+	<button type="button" ng-click="addRandomItem(row)" class="btn btn-sm btn-success">
+		<i class="glyphicon glyphicon-plus">
+		</i> Add random item
+	</button>
+
+	<table st-table="displayedCollection" st-safe-src="rowCollection" class="table table-striped">
+		<thead>
+		<tr>
+			<th st-sort="firstName">first name</th>
+			<th st-sort="lastName">last name</th>
+			<th st-sort="birthDate">birth date</th>
+			<th st-sort="balance">balance</th>
+		</tr>
+		<tr>
+			<th ><input st-search="firstName" class="input-sm form-control" placeholder="Search for first name" type="text"/></th>
+			<th>
+				<input st-search="lastName" placeholder="Search for last name" class="input-sm form-control" type="search"/>
+			</th>
+			<th>
+				<input st-search="birthDate" placeholder="Search for birth date" class="input-sm form-control" type="search"/>
+			</th>
+			<th>
+				<input st-search="balance" placeholder="Search for balance" class="input-sm form-control" type="search"/>
+			</th>
+		</tr>
+		</thead>
+		<tbody>
+		<tr ng-repeat="row in displayedCollection">
+			<td>{{row.firstName}}</td>
+			<td>{{row.lastName}}</td>
+			<td>{{row.birthDate}}</td>
+			<td>{{row.balance}}</td>
+			<td>
+				<button type="button" ng-click="removeItem(row)" class="btn btn-sm btn-danger">
+					<i class="glyphicon glyphicon-remove-circle">
+					</i>
+				</button>
+			</td>
+		</tr>
+		</tbody>
+	</table>
+
+	</div>
+</section>

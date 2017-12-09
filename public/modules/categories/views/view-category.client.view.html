@@ -1,0 +1,21 @@
+<section data-ng-controller="CategoriesController" data-ng-init="findOne()">
+	<div class="panel panel-default">
+		<div class="panel-heading">Details</div>
+		<div class="panel-body" style="height:200px; overflow-y: hidden;" >
+			<dl>
+				<dt>Name</dt>
+				<dd>{{selectedCategory.name}}</dd>
+				<dt>Description</dt>
+				<dd>{{selectedCategory.description}}</dd>
+			</dl>
+			<div class="pull-right">
+				<a class="btn btn-primary" href="/#!/categories/{{selectedCategory._id}}/edit">
+					<i class="glyphicon glyphicon-edit"></i>
+				</a>
+				<a class="btn btn-primary" data-ng-click="remove(selectedCategory);">
+					<i class="glyphicon glyphicon-trash"></i>
+				</a>
+			</div>
+		</div>
+	</div>
+</section>

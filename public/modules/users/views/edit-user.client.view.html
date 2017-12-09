@@ -1,0 +1,68 @@
+<section data-ng-init="findOne()">
+    <div class="panel panel-default">
+        <div class="panel-heading">Details</div>
+        <div class="panel-body" style="height:515px; overflow-y: hidden;" >
+            <div class="pull-left">
+                <button type="button" class="btn btn-primary" ng-click="update()">Save</button>
+                <button type="button" class="btn btn-default" ng-click="view()">View</button>
+            </div>
+            <form name="form.userForm" class="form-validation" style="margin-top:50px" novalidate>
+                <div class="col col-xs-12">
+                    <div class="col col-xs-12 col-sm-6">
+                        <div class="form-group">
+                            <label>Username <i class="fa fa-star ac-text-warning"></i></label>
+                            <div class="controls">
+                                <input type="text" name="username" data-ng-model="user.username" id="name" class="form-control" placeholder="" required>
+                            </div>
+                            <p class="ac-text-danger" ng-show="form.userForm.username.$error.acApi">{{form.userForm.username.$error.acApi}}</p>
+                        </div>
+                        <div class="form-group">
+                            <label>Display Name <i class="fa fa-star ac-text-warning"></i></label>
+                            <div class="controls">
+                                <input type="text" name="displayName" data-ng-model="user.displayName" id="displayName" class="form-control" placeholder="" required>
+                            </div>
+                            <p class="ac-text-danger" ng-show="form.userForm.displayName.$error.acApi">{{form.userForm.displayName.$error.acApi}}</p>
+                        </div>
+                        <div class="form-group">
+                            <label>Mobile phone Number <i class="fa fa-star ac-text-warning"></i></label>
+                            <div class="controls">
+                                <input type="text" ng-minlength="10" name="mobileNumber" data-ng-model="user.phone" id="mobileNumber" class="form-control" placeholder="" required>
+                            </div>
+                            <p class="ac-text-danger" ng-show="form.userForm.mobileNumber.$error.acApi">{{form.userForm.mobileNumber.$error.acApi}}</p>
+                        </div>
+                    </div>
+                    <div class="col col-xs-12 col-sm-6">
+                        <div class="form-group">
+                            <div class="form-group">
+                                <label>Email <i class="fa fa-star ac-text-warning"></i></label>
+                                <div class="controls">
+                                    <input type="email" name="email" data-ng-model="user.email" id="email" class="form-control" placeholder="" required>
+                                </div>
+                                <p class="ac-text-danger" ng-show="form.userForm.email.$error.acApi">{{form.userForm.email.$error.acApi}}</p>
+                            </div>
+                            <div class="form-group">
+                                <label>Password <i class="fa fa-star ac-text-warning"></i></label>
+                                <div class="controls">
+                                    <input type="password" name="password" data-ng-model="displayPassword" id="password" class="form-control" ng-change="passwordChanged(displayPassword)" required>
+                                </div>
+                                <p class="ac-text-danger" ng-show="form.userForm.password.$error.acApi">{{form.userForm.password.$error.acApi}}</p>
+                            </div>
+                            <div class="form-group">
+                                <label>Role <i class="fa fa-star ac-text-warning"></i></label>
+                                <div class="no-padding">
+                                    <div class="input-group">
+                                        <div type="text" ng-dropdown-multiselect="" options="roleOptions" selected-model="optionsModel" extra-settings="optionsSettings"></div>
+                                    </div>
+                                </div>
+                                <div class="controls">
+                                    <input type="text" name="roleValue" data-ng-model="optionsModel.label" id="roleValue" class="form-control" placeholder="" style="display:none" required>
+                                </div>
+                                <p class="ac-text-danger" ng-show="form.userForm.roleValue.$error.acApi">{{form.userForm.roleValue.$error.acApi}}</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+</section>
