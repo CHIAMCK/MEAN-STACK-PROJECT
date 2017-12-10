@@ -39,32 +39,6 @@ angular.module('categories')
                 editController: $controller('CategoriesEditController', {$scope: $scope})
 			};
 
-	  		$scope.retrieve = function () {
-                blockUI.start();
-                $http({
-                    url: 'categories',
-                    method: 'GET',
-                }).then(function (resp) {
-                    var ret = resp ? resp.data : null;
-                    if (ret && Object.keys(ret).length !== 0) {
-                        $scope.items = ret;
-                    } else {
-                        $scope.items = [];
-                    }
-                    blockUI.stop();
-                    $scope.selectedId = $scope.items[0]._id;
-                    $scope.selectedCategory = $scope.items[0];
-                    $scope.total = $scope.items.length;
-                    $scope.listPageMode = 'page';
-                    $scope.viewPageMode = 'page';
-
-
-                }, function(err, status){
-                    $scope.items = [];
-                    blockUI.stop();
-                });
-
-			};
 
 	  		$scope.filterListView = function (params, ctrl, noRefreshView) {
                 if (params && params.pagination && !params.pagination.number) {
@@ -84,12 +58,14 @@ angular.module('categories')
                             params.pagination.numberOfPages = Math.ceil(ret.count / params.pagination.number);
                             params.pagination.count = ret.count;
                             params.pagination.page = Math.ceil((params.pagination.start+1)/params.pagination.number);
+                            $scope.params = params;
                         }
                     } else {
                         $scope.items = [];
                     }
                     blockUI.stop();
                     $scope.selectedId = $scope.items[0]._id;
+                    setSelectedId();
                     $scope.selectedCategory = $scope.items[0];
                     if (!$scope.listPageMode) {
                         $scope.listPageMode = 'page';
@@ -104,6 +80,11 @@ angular.module('categories')
                     blockUI.stop();
                 });
 
+            };
+
+            var setSelectedId = function () {
+                var params = {'#':$scope.selectedId};
+                $state.go($state.current.name, params, {location: 'replace', reload:false, inherit: false, notify: false});
             };
 
             $scope.resetSmartTableSearch = function() {
@@ -201,7 +182,7 @@ angular.module('categories')
                 $scope.editEnabled = false;
                 $scope.successSave = false;
                 $scope.error ='';
-                this.setSelectedId();
+                this.setSelectedId($scope.params);
 
             };
 
@@ -212,8 +193,8 @@ angular.module('categories')
 
 		}
 	])
-	.controller('CategoriesViewController', ['$scope', '$stateParams', '$location', '$window', 'Authentication', 'Categories', 'blockUI','prompt',
-    	function($scope, $stateParams, $location, $window, Authentication, Categories, blockUI, prompt) {
+	.controller('CategoriesViewController', ['$scope', '$stateParams', '$location', '$window', 'Authentication', 'Categories', 'blockUI','prompt', 'acList',
+    	function($scope, $stateParams, $location, $window, Authentication, Categories, blockUI, prompt, acList) {
 
 	        $scope.editCategory = function () {
 	            $scope.editEnabled = true;
@@ -246,8 +227,7 @@ angular.module('categories')
                                 $scope.items.splice(i, 1);
                             }
                         }
-                        $window.location.reload();
-
+                        acList.list($scope.params, $scope);
                     }
                 });
 
@@ -266,15 +246,16 @@ angular.module('categories')
             };
     	}
     ])
-    .controller('CategoriesCreateController', ['$scope', '$stateParams', '$location', '$window', 'Authentication', 'Categories', 'blockUI', '$http',
-        function($scope, $stateParams, $location, $window , Authentication, Categories, blockUI, $http) {
+    .controller('CategoriesCreateController', ['$scope', '$stateParams', '$location', '$window', 'Authentication', 'Categories', 'blockUI', '$http', '$timeout', 'acList',
+        function($scope, $stateParams, $location, $window , Authentication, Categories, blockUI, $http, $timeout, acList) {
 
             $scope.optionsModel = {};
             $scope.roleOptions = [ {id: 1, label: "Administrator"}, {id: 2, label: "Approver"}, {id: 3, label: "Creator"},  {id: 4, label: "User"}];
-            $scope.optionsSettings = { externalIdProp : '', closeOnSelect:true ,selectionLimit: 1, smartButtonMaxItems: 3, smartButtonTextConverter: function(itemText, originalItem) { if (itemText === 'Jhon') { return 'Jhonny!'; } return itemText; }};
+            $scope.optionsSettings = { externalIdProp : '', closeOnSelect:true ,selectionLimit: 1, smartButtonMaxItems: 3, smartButtonTextConverter: function(itemText, originalItem) { return itemText; }};
 
 
             $scope.save = function () {
+                var _this = this;
                 /*
                 var formData = new FormData();
                 var image = document.getElementById('file').files[0];
@@ -292,27 +273,33 @@ angular.module('categories')
                 });
                 */
 
-            var category = new Categories ({
-               name: this.name,
-               description: this.description,
-               updated: Date.now,
-               role: $scope.optionsModel.label,
-               updatedBy: $scope.authentication.user._id
-            });
+                var category = new Categories ({
+                    name: this.name,
+                    description: this.description,
+                    updated: Date.now,
+                    role: $scope.optionsModel.label,
+                    updatedBy: $scope.authentication.user._id
+                });
 
-            category.$save(function(response) {
-                $scope.addEnabled = false;
-                $scope.successSave = true;
-                setTimeout(function(){ $window.location.reload(); }, 1000);
-            }, function(errorResponse) {
-                $scope.error = errorResponse.data.message;
-            });
+                category.$save(function(response) {
+                    $scope.isLoading = true;
+                    $scope.addEnabled = false;
+                    $scope.successSave = true;
 
-        };
+                    $timeout(function() {
+                        $scope.successSave = false;
+                    }, 1000);
+                    $scope.isLoading = false;
+                    acList.list($scope.params, $scope);
+                }, function(errorResponse) {
+                    $scope.error = errorResponse.data.message;
+                });
+
+            };
         }
     ])
-    .controller('CategoriesEditController', ['$scope', '$stateParams', '$location', '$window', 'Authentication', 'Categories', 'blockUI',
-        function($scope, $stateParams, $location, $window , Authentication, Categories, blockUI) {
+    .controller('CategoriesEditController', ['$scope', '$stateParams', '$location', '$window', 'Authentication', 'Categories', 'blockUI', 'acList',
+        function($scope, $stateParams, $location, $window , Authentication, Categories, blockUI, acList) {
 
             // Find existing Category
             $scope.findOne = function() {
@@ -324,11 +311,14 @@ angular.module('categories')
 
             // Update existing Category
             $scope.update = function() {
+                $scope.isLoading = true;
                 var category = $scope.category;
-
+                category.updatedBy = $scope.authentication.user._id;
                 category.$update(function() {
-                    $window.location.reload();
+                    $scope.editEnabled = false;
+                    acList.list($scope.params, $scope);
                 }, function(errorResponse) {
+
                     $scope.error = errorResponse.data.message;
                 });
             };

@@ -59,7 +59,6 @@ angular.module('users')
                     }
                     blockUI.stop();
                     $scope.selectedId = $scope.items[0]._id;
-                    $scope.selectedCategory = $scope.items[0];
                     $scope.total = $scope.items.length;
                     $scope.listPageMode = 'page';
                     $scope.viewPageMode = 'page';
@@ -305,8 +304,8 @@ angular.module('users')
 
         }
     ])
-    .controller('UsersViewController', ['$scope', '$stateParams', '$location', '$window', 'Authentication', 'Users', 'blockUI','prompt', '$http',
-        function($scope, $stateParams, $location, $window, Authentication, Users, blockUI, prompt, $http) {
+    .controller('UsersViewController', ['$scope', '$stateParams', '$location', '$window', 'Authentication', 'Users', 'blockUI','prompt', '$http', 'acList',
+        function($scope, $stateParams, $location, $window, Authentication, Users, blockUI, prompt, $http, acList) {
 
             $scope.editUser = function () {
                 $scope.editEnabled = true;
@@ -339,8 +338,7 @@ angular.module('users')
                                 $scope.items.splice(i, 1);
                             }
                         }
-                        $window.location.reload();
-
+                        acList.list($scope.params, $scope);
                     }
                 });
 
@@ -359,8 +357,8 @@ angular.module('users')
             };
         }
     ])
-    .controller('UsersCreateController', ['$scope', '$stateParams', '$location', '$window', 'Authentication', 'Users', 'blockUI', 'acEdit',
-        function($scope, $stateParams, $location, $window , Authentication, Users, blockUI, acEdit) {
+    .controller('UsersCreateController', ['$scope', '$stateParams', '$location', '$window', 'Authentication', 'Users', 'blockUI', 'acEdit', '$timeout', 'acList',
+        function($scope, $stateParams, $location, $window , Authentication, Users, blockUI, acEdit, $timeout, acList) {
 
             $scope.optionsModel = {};
             $scope.roleValue = $scope.optionsModel.label;
@@ -374,30 +372,36 @@ angular.module('users')
                         $scope.error = '';
                     }
 
-                var user = new Users ({
-                    phone: this.mobileNumber,
-                    updated: Date.now,
-                    email: this.email,
-                    password: this.password,
-                    username: this.name,
-                    displayName : this.displayName,
-                    roles: $scope.optionsModel.label,
-                    updatedBy: $scope.authentication.user._id
-                });
+                    var user = new Users ({
+                        phone: this.mobileNumber,
+                        updated: Date.now,
+                        email: this.email,
+                        password: this.password,
+                        username: this.name,
+                        displayName : this.displayName,
+                        roles: $scope.optionsModel.label,
+                        updatedBy: $scope.authentication.user._id
+                    });
 
 
-                user.$save(function(response) {
-                    $scope.successSave = true;
-                    setTimeout(function(){ $window.location.reload(); }, 1000);
-                }, function(errorResponse) {
-                    acEdit.setErrorFields($scope.form.userForm, $scope.form.userForm.$error);
-                    $scope.error = errorResponse.data.message;
-                });
-            };
+                    user.$save(function(response) {
+                        $scope.isLoading = true;
+                        $scope.addEnabled = false;
+                        $scope.successSave = true;
+                        $timeout(function() {
+                            $scope.successSave = false;
+                        }, 1000);
+                        $scope.isLoading = false;
+                        acList.list($scope.params, $scope);
+                    }, function(errorResponse) {
+                        acEdit.setErrorFields($scope.form.userForm, $scope.form.userForm.$error);
+                        $scope.error = errorResponse.data.message;
+                    });
+                };
         }
     ])
-    .controller('UsersEditController', ['$scope', '$stateParams', '$location', '$window', 'Authentication', 'Users', 'blockUI', 'acEdit',
-        function($scope, $stateParams, $location, $window , Authentication, Users, blockUI, acEdit) {
+    .controller('UsersEditController', ['$scope', '$stateParams', '$location', '$window', 'Authentication', 'Users', 'blockUI', 'acEdit', 'acList', '$timeout',
+        function($scope, $stateParams, $location, $window , Authentication, Users, blockUI, acEdit, acList, $timeout) {
 
             $scope.displayPassword = 'xxxxxx';
             $scope.passwordChanged = function(val) {
@@ -424,9 +428,15 @@ angular.module('users')
                 var user = $scope.user;
                 user.roles = $scope.optionsModel.label;
                 user.updatedBy = $scope.authentication.user._id;
+                $scope.isLoading = true;
 
                 user.$update(function() {
-                    $window.location.reload();
+                    $scope.editEnabled = false;
+                    $scope.successSave = true;
+                    $timeout(function() {
+                        $scope.successSave = false;
+                    }, 1000);
+                    acList.list($scope.params, $scope);
                 }, function(errorResponse) {
                     acEdit.setErrorFields($scope.form.userForm, $scope.form.userForm.$error);
                     $scope.error = errorResponse.data.message;

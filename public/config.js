@@ -4,7 +4,7 @@
 var ApplicationConfiguration = (function() {
 	// Init module configuration options
 	var applicationModuleName = 'northwindnode';
-	var applicationModuleVendorDependencies = ['ngResource', 'ngCookies',  'ngAnimate',  'ngTouch',  'ngSanitize',  'ui.router', 'ui.bootstrap', 'ui.utils', 'smart-table', 'acCategory', 'acListPage', 'blockUI', 'cgPrompt', 'daterangepicker', 'angularjs-dropdown-multiselect', 'acEditPage', 'ngFileSaver'];
+	var applicationModuleVendorDependencies = ['ngResource', 'ngCookies',  'ngAnimate',  'ngTouch',  'ngSanitize',  'ui.router', 'ui.bootstrap', 'ui.utils', 'smart-table', 'acCategory', 'acListPage', 'blockUI', 'cgPrompt', 'daterangepicker', 'angularjs-dropdown-multiselect', 'acEditPage', 'ngFileSaver', 'angular-loading-bar'];
 
 	// Add a new vertical module
 	var registerModule = function(moduleName, dependencies) {

@@ -4,7 +4,7 @@ module.exports = {
 	db: 'mongodb://localhost/northwindnode-dev',
     rooturl: 'http://localhost:3000',
     app: {
-		title: 'NorthwindNode - Development Environment'
+		title: 'MEAN STACK - Development Environment'
 	},
 	facebook: {
 		clientID: process.env.FACEBOOK_ID || 'APP_ID',

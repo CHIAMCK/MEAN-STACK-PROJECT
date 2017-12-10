@@ -18,6 +18,7 @@ module.exports = {
                 'public/lib/angular-block-ui/dist/angular-block-ui.css',
                 'public/lib/font-awesome/css/font-awesome.css',
                 'public/lib/font-awesome/fonts/*.*',
+                'public/lib/angular-loading-bar/build/loading-bar.css',
                 'public/lib/bootstrap-daterangepicker/daterangepicker.css'
             ],
 			js: [
@@ -39,6 +40,7 @@ module.exports = {
                 'public/lib/angular-block-ui/dist/angular-block-ui.js',
                 'public/lib/angular-prompt/dist/angular-prompt.js',
                 'public/lib/moment/moment.js',
+                'public/lib/angular-loading-bar/build/loading-bar.js',
                 'public/lib/bootstrap-daterangepicker/daterangepicker.js',
                 'public/lib/angular-daterangepicker/js/angular-daterangepicker.js',
 				'public/lib/angularjs-dropdown-multiselect/src/angularjs-dropdown-multiselect.js',

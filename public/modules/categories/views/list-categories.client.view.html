@@ -14,6 +14,7 @@
                 </div>
             </div>
 
+            <div style="margin-left: 5px;" class="col-xs-12" ng-if="isLoading"><i class="fa fa-2x fa-spinner fa-spin"></i> {{'Loading'}}...</div>
             <div id="tablelist" autofocus class="panel-body" style="height:515px; overflow-y: scroll;">
                 <!-- <div class="list-group">
                     <a data-ng-repeat="category in categories | limitTo: offset - categories.length | limitTo: pageSize" ng-click="selectCategory(category,$index)" class="list-group-item">
@@ -21,7 +22,7 @@
                         <span data-ng-bind="category.description"></span>
                     </a>
                 </div> -->
-                <div class="pull-left">
+                <div ng-if="!isLoading" class="pull-left">
                     <button type="button" class="btn btn-success" ng-click="listViewAdd()">Add</button>
                     <button type="button" class="btn btn-primary">Duplicate</button>
                     <button type="button" class="btn btn-sm btn-default navbar-btn">Total: {{total}}</button>
